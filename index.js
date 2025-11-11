@@ -31,10 +31,27 @@ async function run() {
 
     await client.connect();
      
+   const db = client.db("hero_db")
+   const heroCollection = db.collection("hero") 
 
-
-
-
+  // limit 6 card in home page
+   app.get('/latest-home',async (req,res)=>{
+    const cursor = heroCollection.find({}).limit(6)
+    const result = await cursor.toArray()
+    res.send({
+      // success:true,
+      result
+    })
+   })
+  //  limit 3 card in home page
+   app.get('/slider-home',async (req,res)=>{
+    const cursor = heroCollection.find().sort({price:1}).limit(3)
+    const result = await cursor.toArray()
+    res.send({
+      // success:true,
+      result
+    })
+   })
 
     
     // Send a ping to confirm a successful connection
