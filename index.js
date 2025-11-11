@@ -33,6 +33,7 @@ async function run() {
      
    const db = client.db("hero_db")
    const heroCollection = db.collection("hero") 
+   const booksCollection =db.collection("books")
 
   // limit 6 card in home page
    app.get('/latest-home',async (req,res)=>{
@@ -72,8 +73,26 @@ async function run() {
       result
     })
    })
-asdf
-    
+  // books post database insert one
+  app.post('/books',async (req,res)=>{
+    const data = req.body 
+    const result = await booksCollection.insertOne(data) 
+    res.send(result)
+  })
+    // my bookins page get
+    app.get('/bookings',async(req,res)=>{
+      const email = req.query.email 
+      const query = {user_email:email}
+      const result = await booksCollection.find(query).toArray()
+      res.send(result)
+    })
+    // booking delete
+    app.delete('/bookings/:id',async (req,res)=>{
+      const id =req.params.id
+      const query = {_id:new ObjectId(id)}
+      const result = await booksCollection.deleteOne(query)
+      res.send(result)
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
