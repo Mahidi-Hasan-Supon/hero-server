@@ -62,6 +62,12 @@ async function run() {
       result
     })
    })
+  // add services
+  app.post('/services',async(req,res)=>{
+    const data = req.body 
+    const result = await heroCollection.insertOne(data)
+    res.send(result)
+  }) 
   //  services details find one
    app.get('/servicesdetails/:id',async (req,res)=>{
     const id = req.params.id
