@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const express = require('express')
 const cors = require('cors')
@@ -47,6 +47,26 @@ async function run() {
    app.get('/slider-home',async (req,res)=>{
     const cursor = heroCollection.find().sort({price:1}).limit(3)
     const result = await cursor.toArray()
+    res.send({
+      // success:true,
+      result
+    })
+   })
+  //  all heros services
+   app.get('/services',async (req,res)=>{
+    const cursor = heroCollection.find()
+    const result = await cursor.toArray()
+    res.send({
+      // success:true,
+      result
+    })
+   })
+  //  services details find one
+   app.get('/servicesdetails/:id',async (req,res)=>{
+    const id = req.params.id
+    const query = {_id:new ObjectId(id)}
+    const result =await heroCollection.findOne(query)
+ 
     res.send({
       // success:true,
       result
