@@ -46,7 +46,7 @@ async function run() {
    })
   //  limit 3 card in home page
    app.get('/slider-home',async (req,res)=>{
-    const cursor = heroCollection.find().sort({price:1}).limit(3)
+    const cursor = heroCollection.find().sort({price:-1}).limit(3)
     const result = await cursor.toArray()
     res.send({
       // success:true,
