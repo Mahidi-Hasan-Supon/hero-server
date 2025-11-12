@@ -46,7 +46,7 @@ async function run() {
    })
   //  limit 3 card in home page
    app.get('/slider-home',async (req,res)=>{
-    const cursor = heroCollection.find().sort({price:-1}).limit(3)
+    const cursor = heroCollection.find().sort({price:1}).limit(3)
     const result = await cursor.toArray()
     res.send({
       // success:true,
@@ -68,6 +68,13 @@ async function run() {
     const result = await heroCollection.insertOne(data)
     res.send(result)
   }) 
+  // add services in users table format
+  app.get('/service',async(req,res)=>{
+    const email = req.query.email 
+    const query = {email:email}
+    const result = await heroCollection.find(query).toArray()
+    res.send(result)
+  })
   //  services details find one
    app.get('/servicesdetails/:id',async (req,res)=>{
     const id = req.params.id
