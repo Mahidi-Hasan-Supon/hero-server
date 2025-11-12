@@ -68,13 +68,34 @@ async function run() {
     const result = await heroCollection.insertOne(data)
     res.send(result)
   }) 
-  // add services in users table format
+  // add my services in users table format
   app.get('/service',async(req,res)=>{
     const email = req.query.email 
     const query = {email:email}
     const result = await heroCollection.find(query).toArray()
     res.send(result)
   })
+  // my service update
+  app.put('/service/:id',async(req,res)=>{
+    const id = req.params.id
+    const query = {_id:new ObjectId(id)}
+    const updateService = req.body 
+    const update ={
+      $set:updateService
+    }
+    const result = await heroCollection.updateOne(query,update)
+    res.send(result)
+     })
+    //  service delete table theke
+    app.delete('/service/:id',async(req,res)=>{
+      const id = req.params.id
+      console.log(id);
+      const query = {_id:new ObjectId(id)}
+      const result = await heroCollection.deleteOne(query)
+      console.log(result);
+      res.send(result)
+    })
+
   //  services details find one
    app.get('/servicesdetails/:id',async (req,res)=>{
     const id = req.params.id
