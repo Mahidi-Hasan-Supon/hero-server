@@ -4,7 +4,8 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const port = process.env.PORT || 3000
-
+const { config } = require('dotenv');
+require('dotenv').config()
 app.use(cors())
 app.use(express.json())
 
@@ -13,9 +14,11 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+// DB_USER
+// DB_PASS
 // uri user: hero-db
 //uri password: OsgvE4TYcN7krN3q
-const uri = "mongodb+srv://hero-db:OsgvE4TYcN7krN3q@cluster0.d4lgux6.mongodb.net/?appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.d4lgux6.mongodb.net/?appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
