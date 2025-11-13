@@ -72,24 +72,24 @@ async function run() {
     const result = await heroCollection.insertOne(data)
     res.send(result)
   }) 
-  // ⭐⭐ ADD REVIEW (User feedback after booking)
+  //  ADD REVIEW (User feedback after booking)
 app.post('/services/:id/review', async (req, res) => {
   const id = req.params.id;
   const review = req.body; // { user, rating, comment, date }
 
   const result = await heroCollection.updateOne(
     { _id: new ObjectId(id) },
-    { $push: { reviews: review } } // service object এর reviews array তে নতুন review push
+    { $push: { reviews: review } } // service object reviews array new review push
   );
 
   res.send(result);
 });
 
-// ⭐⭐ GET REVIEWS for a specific service
+// GET REVIEWS for a specific service
 app.get('/services/:id/reviews', async (req, res) => {
   const id = req.params.id;
   const service = await heroCollection.findOne({ _id: new ObjectId(id) });
-  res.send(service?.reviews || []); // যদি reviews না থাকে তাহলে ফাঁকা array ফেরত দেবে
+  res.send(service?.reviews || []); //  reviews nai
 });
 
 app.get('/top-rated', async (req, res) => {
