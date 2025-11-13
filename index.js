@@ -54,20 +54,44 @@ async function run() {
     })
    })
   //  all heros services
-   app.get('/services',async (req,res)=>{
-    const cursor = heroCollection.find()
-    const result = await cursor.toArray()
-    res.send({
-      // success:true,
-      result
-    })
-   })
+  //  app.get('/services',async (req,res)=>{
+  //   const cursor = heroCollection.find()
+  //   const result = await cursor.toArray()
+  //   res.send({
+  //     // success:true,
+  //     result
+  //   })
+  //  })
   // add services
   app.post('/services',async(req,res)=>{
     const data = req.body 
     const result = await heroCollection.insertOne(data)
     res.send(result)
   }) 
+  // services $gtl , $ltl kora
+  app.get('/services',async(req,res)=>{
+    const { minPrice, maxPrice } = req.query;
+  const query ={}
+  // min price
+  if (minPrice && !maxPrice) {
+    query.price = { $gte: parseInt(minPrice) };
+  }
+
+  // sudu maxPrice 
+  if (!minPrice && maxPrice) {
+    query.price = { $lte: parseInt(maxPrice) };
+  }
+
+  // max er min price
+  if (minPrice && maxPrice) {
+    query.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };
+  }
+
+    const result = await heroCollection.find(query).toArray()
+    res.send(result)
+  })
+  
+
   // add my services in users table format
   app.get('/service',async(req,res)=>{
     const email = req.query.email 
