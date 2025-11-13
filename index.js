@@ -32,7 +32,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
 
-    await client.connect();
+    // await client.connect();
      
    const db = client.db("hero_db")
    const heroCollection = db.collection("hero") 
@@ -71,26 +71,19 @@ async function run() {
     const result = await heroCollection.insertOne(data)
     res.send(result)
   }) 
-  // services $gtl , $ltl kora
+  // services asc,dsc kora
   app.get('/services',async(req,res)=>{
-    const { minPrice, maxPrice } = req.query;
-  const query ={}
-  // min price
-  if (minPrice && !maxPrice) {
-    query.price = { $gte: parseInt(minPrice) };
+  const { sort } = req.query;
+  let cursor = heroCollection.find({})
+
+  if (sort === "asc") {
+    cursor = cursor.sort({ price: 1 });
+  } else if (sort === "desc") {
+    cursor = cursor.sort({ price: -1 });
   }
 
-  // sudu maxPrice 
-  if (!minPrice && maxPrice) {
-    query.price = { $lte: parseInt(maxPrice) };
-  }
 
-  // max er min price
-  if (minPrice && maxPrice) {
-    query.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };
-  }
-
-    const result = await heroCollection.find(query).toArray()
+    const result =await cursor.toArray()
     res.send(result)
   })
   
@@ -155,7 +148,7 @@ async function run() {
       res.send(result)
     })
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
