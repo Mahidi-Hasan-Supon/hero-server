@@ -68,9 +68,47 @@ async function run() {
   // add services
   app.post('/services',async(req,res)=>{
     const data = req.body 
+     data.reviews = [];
     const result = await heroCollection.insertOne(data)
     res.send(result)
   }) 
+  // ⭐⭐ ADD REVIEW (User feedback after booking)
+app.post('/services/:id/review', async (req, res) => {
+  const id = req.params.id;
+  const review = req.body; // { user, rating, comment, date }
+
+  const result = await heroCollection.updateOne(
+    { _id: new ObjectId(id) },
+    { $push: { reviews: review } } // service object এর reviews array তে নতুন review push
+  );
+
+  res.send(result);
+});
+
+// ⭐⭐ GET REVIEWS for a specific service
+app.get('/services/:id/reviews', async (req, res) => {
+  const id = req.params.id;
+  const service = await heroCollection.findOne({ _id: new ObjectId(id) });
+  res.send(service?.reviews || []); // যদি reviews না থাকে তাহলে ফাঁকা array ফেরত দেবে
+});
+
+app.get('/top-rated', async (req, res) => {
+  const services = await heroCollection.find().toArray();
+
+  // Calculate average rating
+  const rated = services.map(s => {
+    const avg = s.reviews && s.reviews.length
+      ? s.reviews.reduce((sum, r) => sum + r.rating, 0) / s.reviews.length
+      : 0;
+    return { ...s, averageRating: avg };
+  });
+
+  const top6 = rated.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
+  res.send(top6);
+});
+
+
+
   // services asc,dsc kora
   app.get('/services',async(req,res)=>{
   const { sort } = req.query;
